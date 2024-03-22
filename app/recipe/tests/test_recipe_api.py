@@ -201,12 +201,13 @@ class PrivateRecipeApiTests(TestCase):
             exists = recipe.tags.filter(name=tag['name'], user=self.user).exists()
             self.assertTrue(exists)
 
-    def test_create_recipe_with_existing_tag(self):
+    def test_create_recipe_with_existing_tags(self):
         """Test creating a recipe with an existing tag."""
         tag_indian = Tag.objects.create(user=self.user, name='Indian')
         payload = {
             'title': 'Pongal',
             'tags': [{'name': 'Indian'}, {'name': 'Breakfast'}],
+            'price': Decimal('4.50'),
             'time_minutes': 60,
         }
         res = self.client.post(RECIPES_URL, payload, format='json')
@@ -223,6 +224,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_create_tag_on_update(self):
         """Test creating a tag on update."""
+
         recipe = create_recipe(user=self.user)
         payload = {'tags': [{'name': 'Lunch'}]}
         url = detail_url(recipe.id)
@@ -240,7 +242,7 @@ class PrivateRecipeApiTests(TestCase):
         recipe.tags.add(tag_breakfast)
 
         tag_lunch = Tag.objects.create(user=self.user, name='Lunch')
-        payload = {'tags': [{'name', 'lunch'}]}
+        payload = {'tags': [{'name': 'Lunch'}]}
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload, format='json')
 
@@ -256,7 +258,6 @@ class PrivateRecipeApiTests(TestCase):
 
         payload = {'tags': []}
         url = detail_url(recipe.id)
-        print(url, payload, self, recipe)
         res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
