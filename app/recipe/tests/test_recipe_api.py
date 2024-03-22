@@ -24,9 +24,6 @@ def detail_url(recipe_id):
     """Return recipe detail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
 
-def create_user(**params):
-    """Create and return a sample user."""
-    return get_user_model().objects.create_user(**params)
 
 def create_recipe(user, **params):
     """Create and return a sample recipe."""
@@ -41,6 +38,10 @@ def create_recipe(user, **params):
 
     recipe = Recipe.objects.create(user=user, **defaults)
     return recipe
+
+def create_user(**params):
+    """Create and return a sample user."""
+    return get_user_model().objects.create_user(**params)
 
 class PublicRecipeAPITests(TestCase):
     """Test unauthenticated recipe API access."""
@@ -207,7 +208,6 @@ class PrivateRecipeApiTests(TestCase):
             'title': 'Pongal',
             'tags': [{'name': 'Indian'}, {'name': 'Breakfast'}],
             'time_minutes': 60,
-            'price': Decimal('4.50'),
         }
         res = self.client.post(RECIPES_URL, payload, format='json')
 
@@ -244,7 +244,7 @@ class PrivateRecipeApiTests(TestCase):
         url = detail_url(recipe.id)
         res = self.client.patch(url, payload, format='json')
 
-        self.assertEqual(res.status_code_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn(tag_lunch, recipe.tags.all())
         self.assertNotIn(tag_breakfast, recipe.tags.all())
 
@@ -256,6 +256,7 @@ class PrivateRecipeApiTests(TestCase):
 
         payload = {'tags': []}
         url = detail_url(recipe.id)
+        print(url, payload, self, recipe)
         res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
