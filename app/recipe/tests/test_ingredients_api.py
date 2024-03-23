@@ -16,7 +16,7 @@ INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
 def detail_url(ingredient_id):
     """Create and return an ingredient detail URL."""
-    return reverse('recipe:igredient-detail', args=[ingredient_id])
+    return reverse('recipe:ingredient-detail', args=[ingredient_id])
 
 
 def create_user(email='user@example.com', password="testpassword123"):
@@ -74,7 +74,7 @@ class PrivateIngredientsApiTests(TestCase):
 
         payload = {'name': 'Coriander'}
         url = detail_url(ingredient.id)
-        res = self.client.path(url, payload)
+        res = self.client.patch(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
