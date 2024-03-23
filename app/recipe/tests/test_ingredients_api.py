@@ -91,3 +91,4 @@ class PrivateIngredientsApiTests(TestCase):
         ingredients = Ingredient.objects.filter(user=self.user)
         self.assertFalse(ingredients.exists())
 
+
